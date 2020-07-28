@@ -17,7 +17,7 @@ namespace OdeToFood.Web.Controllers
             this.db = db;
         }
         
-        // GET: Reaturants
+        // GET: Restaurants
         public ActionResult Index()
         {
             return View(db.GetAll());
@@ -48,10 +48,59 @@ namespace OdeToFood.Web.Controllers
             if(ModelState.IsValid)
             {
                 db.Add(restaurant);
-                return View();
+                return RedirectToAction("Details", new { id = restaurant.Id });
             }
 
             return View();
+        }
+
+        [HttpGet]
+        public ActionResult Edit(int id)
+        {
+            var model = db.Get(id);
+
+            if(model == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(Restaurant restaurant)
+        {
+            if(ModelState.IsValid)
+            {
+                db.Edit(restaurant);
+                return RedirectToAction("Details", new { id = restaurant.Id });
+            }
+
+            return View(restaurant);
+        }
+
+        [HttpGet]
+        public ActionResult Delete(int id)
+        {
+            var model = db.Get(id);
+            
+            if (model == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(model);
+        }
+
+        //Just adding FormCollection param as a way to avoid signature clash with above method
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id, FormCollection form)
+        {
+            db.Delete(id);
+            return RedirectToAction("Index");
+
         }
     }
 }
