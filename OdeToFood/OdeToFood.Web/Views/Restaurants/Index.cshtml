@@ -11,6 +11,6 @@
 </p>
 
 @foreach (var item in Model) {
-    @Html.Partial("_RestaurantSummary");  
+    @Html.Partial("_RestaurantSummary", item);  
 }
 
